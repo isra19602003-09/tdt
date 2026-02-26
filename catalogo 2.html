@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Completo - AutoParts TDT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables y Reset (Mismo estilo que el anterior) --- */
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #333;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f1f5f9;
+            --text-color: #333;
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            background-color: var(--light-bg); 
+            color: var(--text-color);
+        }
+
+        /* --- Header Glassmorphism --- */
+        header { 
+            background-color: rgb(0, 0, 0);
+            backdrop-filter: blur(10px);
+            color: white; 
+            padding: 1rem; 
+            text-align: center; 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        header h1 {
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-image img { 
+            width: 10%; 
+            border-radius: 5px; 
+            box-shadow: var(--shadow-sm); 
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            object-fit: contain;
+            background-color: transparent;
+            border: 1px solid #050505;
+            position: center;
+        }
+
+        nav { margin-top: 10px; }
+        nav a { 
+            color: #e0e0e0; 
+            text-decoration: none; 
+            margin: 0 15px; 
+            font-weight: 600; 
+            position: relative;
+            transition: 0.3s;
+        }
+        nav a:hover { color: white; }
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* --- Carrito Icono en Header --- */
+        .cart-trigger {
+            cursor: pointer;
+            position: relative;
+            padding: 5px 10px;
+            color: white;
+            font-size: 1.5rem;
+        }
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* --- Contenedor de Categorías --- */
+        .categories-container { 
+            background: white; 
+            padding: 20px; 
+            text-align: center; 
+            box-shadow: var(--shadow-sm); 
+            position: sticky; 
+            top: 80px; /* Ajuste para que no se oculte tras el header */
+            z-index: 900;
+        }
+
+        .category-btn { 
+            background: #f1f1f1; 
+            border: none; 
+            padding: 10px 25px; 
+            margin: 5px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease; 
+            color: #555;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .category-btn:hover { 
+            transform: translateY(-2px);
+            background-color: transparent;
+        }
+
+        .category-btn.active { 
+            background: var(--primary-color); 
+            color: white; 
+            box-shadow: 0 4px 10px rgb(255, 255, 255);
+            transform: scale(1.05);
+        }
+
+        /* --- Barra de Búsqueda --- */
+        .search-container { 
+            background: var(--secondary-color); 
+            padding: 30px; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+
+        .search-container input { 
+            padding: 15px 20px; 
+            width: 60%; 
+            max-width: 600px;
+            border-radius: 50px; 
+            border: 2px solid transparent; 
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- Grid y Cards --- */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+
+        .card { 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: var(--shadow-sm); 
+            display: flex; 
+            flex-direction: column; 
+            border: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: var(--shadow-md); 
+        }
+
+        /* Animación de zoom en imagen */
+        .card img { 
+            width: 100%; 
+            height: 220px; 
+            object-fit: contain; 
+            padding: 10px;
+            box-sizing: border-box;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover img { transform: scale(1.1); }
+
+        .card-info { 
+            padding: 20px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            background: white;
+            z-index: 2;
+        }
+
+        .card-info h3 {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+
+        .card-info p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .price { 
+            font-size: 1.6rem; 
+            color: var(--primary-color); 
+            font-weight: 800; 
+            margin: 15px 0; 
+        }
+        
+        /* Botones */
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-add-cart {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add-cart:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px #555 (217, 4, 41, 0.5);
+        }
+
+        .btn-mercadolibre { 
+            display: block; 
+            background: linear-gradient(45deg, #ff0808, #d90429);
+            color: #f5f6f7; 
+            padding: 10px; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            cursor: pointer;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            font-weight: bold; 
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-mercadolibre:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(217, 4, 41, 0.5);
+        }
+
+        .btn-detalles { 
+            display: block; 
+            margin-top: 10px; 
+            color: #7f8c8d; 
+            text-decoration: none; 
+            font-weight: 600; 
+            text-align: center;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .btn-detalles:hover { color: var(--secondary-color); text-decoration: underline; }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none; /* Oculto por defecto */
+            justify-content: flex-end;
+        }
+
+        .cart-modal {
+            background: white;
+            width: 400px;
+            max-width: 90%;
+            height: 100%;
+            padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f1f1;
+            padding-bottom: 10px;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-right: 10px;
+        }
+
+        .cart-item-details { flex-grow: 1; }
+        .cart-item-title { font-size: 0.9rem; font-weight: bold; }
+        .cart-item-price { color: var(--primary-color); font-size: 0.9rem; }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-footer {
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .btn-checkout {
+            background: #25D366; /* WhatsApp Green */
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-checkout:hover { background: #1ebc57; }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Utilidad para JS */
+        .hide { display: none; }
+
+        /* --- Footer --- */
+        footer { 
+            background: linear-gradient(to right, #1a1a1a, #2c3e50); 
+            color: #bdc3c7; 
+            text-align: center; 
+            padding: 40px 20px; 
+            margin-top: 60px; 
+            border-top: 1px solid #333;
+        }
+        footer p { margin: 5px 0; font-weight: 500; color: white; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-image">
+     <a href="index.html">
+        <img src="logo.png" alt="TDT">
+     </a>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <nav><a href="index.html">Inicio</a>
+            <a href="catalogo 2.html">Catálogo</a>
+        </nav>
+        <div class="cart-trigger" onclick="toggleCart()">
+            🛒
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
+    </div>
+</header>
+
+  <div class="categories-container">
+    <button class="category-btn active" onclick="filterProduct('todos')">TODOS</button>
+    
+    <button class="category-btn" onclick="filterProduct('Honda')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Honda.svg" alt="Honda" style="height: 35px; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;">
+    </button>
+    
+    <button class="category-btn" onclick="filterProduct('Toyota')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Toyota_logo_%28Red%29.svg/960px-Toyota_logo_%28Red%29.svg.png" alt="Toyota" style="height: 35px; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;">
+    </button>
+
+    <button class="category-btn" onclick="filterProduct('hyundai')">
+        <img src="Hyundai.png" alt="hyundai" style="height: 35px; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;">
+    </button>
+
+</div>
+
+<div class="search-container">
+    <input type="text" id="searchInput" onkeyup="searchByText()" placeholder="descripción del producto o N° de parte...">
+</div>
+
+<div class="container">
+        <p id="noResults" style="display: none; text-align: center; font-size: 1.2rem; color: #e63946; font-weight: bold;">
+        No se encontraron repuestos para tu búsqueda.
+    </p>
+    <div class="grid" id="productGrid">
+
+        <div class="card">
+            <a href="producto-gmb.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_841348-MLV106501008541_022026-F.webp" alt="Kit de tiempo GMB"></a>
+            <div class="card-info">
+                <div>
+                    <h3>Kit correa de Tiempo GMB | GKHO0020H</h3>
+                    <p>Kit Correa Tiempo de Honda Odyssey 3.5 05-17 (197dts)</p>
+                    <p class="price">$200.00</p>
+                </div>             
+                <div class="btn-group">
+                    <button class="btn-add-cart" onclick="addToCart('p1', 'Kit correa de Tiempo GMB|GKHO0020H', 200, 'https://http2.mlstatic.com/D_NQ_NP_2X_841348-MLV106501008541_022026-F.webp')">
+                        <span>+</span> Agregar al Carrito
+                    </button>
+                    <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit correa de Tiempo GMB|GKHO0020H" class="btn-mercadolibre">Comprar ahora</a>
+                    <a href="producto-gmb.html" class="btn-detalles">Ver mas detalles</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="GKHO003H.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_708536-MLV106511390607_022026-F.webp" alt="Kit de tiempo GMB"></a>
+            <div class="card-info">
+                <div>
+                   <h3>Kit correa de Tiempo de Honda GMB | GKHO003H</h3>
+                   <p>Kit correa de Tiempo Honda Odyssey 3.5 05-17 (197dts) Gmb Original</p>
+                   <p class="price">$110.00</p>
+               </div>
+               <div class="btn-group">
+                   <button class="btn-add-cart" onclick="addToCart('p2', 'Kit correa de Tiempo GMB|GKHO003H', 110, 'https://http2.mlstatic.com/D_NQ_NP_2X_708536-MLV106511390607_022026-F.webp')">
+                     <span>+</span> Agregar al Carrito
+                   </button>
+                  <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit correa de Tiempo GMB|GKHO003H" class="btn-mercadolibre">Comprar ahora</a>
+                  <a href="GKHO003H.html"class="btn-detalles">Ver mas detalles</a>
+               </div>
+           </div>
+        </div>    
+
+        <div class="card">
+            <a href="GKHO0022H.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_812717-MLV105969578714_022026-F.webp" alt="Kit de tiempo GMB">
+            </a>
+            <div class="card-info">
+                <div>
+                  <h3>Kit correa de Tiempo GMB | GKHO0022H</h3>
+                  <p>KIT CORREA DE TIEMPO HONDA CIVIC 6TA 7MA GENERACIÓN 1.7 01-05 104 (DIENTES)</p>
+                  <p class="price">$92.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p3', 'Kit correa de Tiempo GMB|GKHO0022H',92, 'https://http2.mlstatic.com/D_NQ_NP_2X_812717-MLV105969578714_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit correa de Tiempo GMB|GKHO0022H" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GKHO0022H.html"class="btn-detalles">Ver mas detalles</a>
+             </div>
+           </div>
+        </div>
+
+        <div class="card">
+            <a href="GKHO0002H.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_910980-MLV105970769428_022026-F.webp" alt="Kit de tiempo GMB"></a>
+            <div class="card-info">
+                <div>
+                <h3>kit correa de tiempo GMB|GKHO0002</h3>
+                <p>KIT CORREA DE TIEMPO HONDA ACCORD 1.8 F18 2.2 F22 98-02 112 (DIENTES)|GKHO0002</p>
+                <p class="price">$65.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p48', 'KIT TIEMPO HONDA ACCORD 1.8 F18 2.2 F22 98-02 112 (DIENTES)|GKHO0002',65, 'https://http2.mlstatic.com/D_NQ_NP_2X_910980-MLV105970769428_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el kit correa de tiempo GMB|GKHO0002" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GKHO0002H.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+           </div>
+        </div>
+
+        <div class="card">
+            <a href="GKHO0004H.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_885796-MLV105960187548_022026-F.webp" alt="Kit de tiempo GMB"></a>
+            <div class="card-info">
+            <div>
+                <h3>Kit correa de Tiempo GMB|GKHO0004H</h3>
+                <p>KIT CORREA DE CORREA DE TIEMPO HONDA CIVIC 1.6 D16 96-00 104 (DIENTES)</p>
+                <p class="price">$110.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p4', 'Kit correa de Tiempo GMB|GKHO0004H',110, 'https://http2.mlstatic.com/D_NQ_NP_2X_885796-MLV105960187548_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit correa de Tiempo GMB|GKHO0004H" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GKHO0004H.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+           </div>
+        </div>
+
+        <div class="card">
+            <a href="T049K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_787794-MLV105974620320_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T049K</h3>
+                <p>Kit Cadena Tiempo Meru Prado 2.7 3rz (14 Pzs) (106e)</p>
+                <p class="price">$258.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p5', 'Kit Cadena de Tiempo OSK | T049K',258, 'https://http2.mlstatic.com/D_NQ_NP_2X_787794-MLV105974620320_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T049K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T049K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T055K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_928846-MLV106589270955_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T055K</h3>
+                <p>Kit Cadena Tiempo 4runner Fortuner Kavak 4.0 1gr-fe (15 Pza)</p>
+                <p class="price">$260.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p6', 'Kit Cadena de Tiempo OSK | T055K',260, 'https://http2.mlstatic.com/D_NQ_NP_2X_928846-MLV106589270955_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T055K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T055K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T061K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_789939-MLV106590893897_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T061K</h3>
+                <p>Kit Cadena Tiempo Corolla 1.6 1zr 1.8 2zr 2.0 Irani (10pzs)</p>
+                <p class="price">$220.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p7', 'Kit Cadena de Tiempo OSK | T061K',220, 'https://http2.mlstatic.com/D_NQ_NP_2X_789939-MLV106590893897_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T061K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T061K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T068K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_656189-MLV106037859858_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T068K</h3>
+                <p>Kit Cadena Tiempo Camry 1ra Generación 3.5 2gr 4gr (13 Pzs)</p>
+                <p class="price">$380.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p8', 'Kit Cadena de Tiempo OSK | T068K',380, 'https://http2.mlstatic.com/D_NQ_NP_2X_656189-MLV106037859858_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T068K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T068K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T069K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_764977-MLV106039598498_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK |T069K</h3>
+                <p>Kit Cadena Tiempo Tacoma Camry 2da Gen 3.5 2gr 4gr (13pzs)</p>
+                <p class="price">$385.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p9', 'Kit Cadena de Tiempo OSK |T069K',385, 'https://http2.mlstatic.com/D_NQ_NP_2X_764977-MLV106039598498_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK |T069K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T069K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T070K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_824901-MLV106658559129_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T070K</h3>
+                <p>Kit Cadena Tiempo 4runner Fortuner Kavak 2da Gen 1gr (12pzs)</p>
+                <p class="price">$365.00</p>
+            </div>
+            <div class="btn-group"> 
+                <button class="btn-add-cart" onclick="addToCart('p10', 'Kit Cadena de Tiempo OSK | T070K',365, 'https://http2.mlstatic.com/D_NQ_NP_2X_824901-MLV106658559129_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T070K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T070K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T005K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_789844-MLV105974763642_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T005K</h3>
+                <p>Kit Cadena Tiempo Hilux 22r 77-84 Cadena Doble (8 Pzs) (98e)</p>
+                <p class="price">$130.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p11', 'Kit Cadena de Tiempo OSK | T005K',130, 'https://http2.mlstatic.com/D_NQ_NP_2X_789844-MLV105974763642_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T005K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T005K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T022K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_822890-MLV106658568961_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T022k</h3>
+                <p>Kit Cadena Tiempo Corolla 1.6 1.8 03-14 1zz (7 Pzs)</p>
+                <p class="price">$220.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p12', 'Kit Cadena de Tiempo OSK | T022k',220, 'https://http2.mlstatic.com/D_NQ_NP_2X_822890-MLV106658568961_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T022k" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T022K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T023K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_800629-MLV106658601937_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T023K</h3>
+                <p>Kit Cadena Tiempo Corolla Doble Piñon Leva 1.6 1.8 1zz (8pz)</p>
+                <p class="price">$235.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p13', 'Kit Cadena de Tiempo OSK | T023K',235, 'https://http2.mlstatic.com/D_NQ_NP_2X_800629-MLV106658601937_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T023K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T023K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T031K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_948312-MLV106660453921_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T031K</h3>
+                <p>Kit Cadena Tiempo Camry Previa 2.4 1az 2az (7pzs)</p>
+                <p class="price">$220.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p14', 'Kit Cadena de Tiempo OSK | T031K',220, 'https://http2.mlstatic.com/D_NQ_NP_2X_948312-MLV106660453921_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T031K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T031K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T036K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_779157-MLV106662625655_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo  OSK| T036k</h3>
+                <p>Kit Cadena Tiempo Terios Bego 1.5 3sz 08-15 (8 Pzs)</p>
+                <p class="price">$185.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p15', 'Kit Cadena de Tiempo  OSK| T036k',185, 'https://http2.mlstatic.com/D_NQ_NP_2X_779157-MLV106662625655_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo  OSK| T036k" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T036K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="TD501K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_734758-MLV106660433861_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | TD501K</h3>
+                <p>Kit Cadena Tiempo Terios Cool Daihatsu 1.3 02-07 (7pzs)</p>
+                <p class="price">185.00$</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p16', 'Kit Cadena de Tiempo OSK | TD501K',185, 'https://http2.mlstatic.com/D_NQ_NP_2X_734758-MLV106660433861_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | TD501K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="TD501K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T028K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_819954-MLV106660361075_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T028K</h3>
+                <p>Kit Cadena Tiempo Yaris 1.3 00-10 2nz-fe (6 Pzs)</p>
+                <p class="price">$165.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p17', 'Kit Cadena de Tiempo OSK | T028K',165, 'https://http2.mlstatic.com/D_NQ_NP_2X_819954-MLV106660361075_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T028K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T028K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T040K.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_873405-MLV106660370103_022026-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo OSK | T040K</h3>
+                <p>Kit Cadena Tiempo Yaris Belta 1.5 04-up 1nz-fe 1nz-fxe (6pz)</p>
+                <p class="price">$148.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p18', 'Kit Cadena de Tiempo OSK | T040K',148, 'https://http2.mlstatic.com/D_NQ_NP_2X_873405-MLV106660370103_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo OSK | T040K" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T040K.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="GMB-GTCK-TY021.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_750248-MLV90651156876_082025-F.webp" alt="Cadena de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Kit Cadena de Tiempo GMB | GMB-GTCK-TY021</h3>
+                <p>Kit Cadena Tiempo Toyota Kavak Hilux 4runner Fortuner 1gr-fe (15 pzs)</p>
+                <p class="price">$320.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p70', 'Kit Cadena de Tiempo GMB | GMB-GTCK-TY021',320, 'https://http2.mlstatic.com/D_NQ_NP_2X_750248-MLV90651156876_082025-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Kit Cadena de Tiempo GMB | GMB-GTCK-TY021" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GMB-GTCK-TY021.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card item-honda item-bombas">
+            <a href="producto-bomba.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_980625-MLV105745785838_022026-F.webp" alt="Bomba de agua NPW">
+            </a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-RNA-A01</h3>
+                <p> bomba de agua de Honda Civic R18 06-11</p>
+                <p class="price">$60.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p19', 'Bomba de agua NPW|19200-RNA-A01',60, 'https://http2.mlstatic.com/D_NQ_NP_2X_980625-MLV105745785838_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW|19200-RNA-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="producto-bomba.html" class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-PO8-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_668208-MLV106408708511_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-PO8-003</h3>
+                <p>Bomba Agua Honda Civic D15 D16 Zc 91-08</p>
+                <p class="price">$50.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p20', 'Bomba de agua NPW | 19200-PO8-003',50, 'https://http2.mlstatic.com/D_NQ_NP_2X_668208-MLV106408708511_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-PO8-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-PO8-003.html"class="btn-detalles">Ver mas detalles</a> 
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-PM3-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_895634-MLV106407087991_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info"> 
+                <div>
+                <h3>Bomba de agua NPW | 19200-PM3-003</h3>
+                <p>Bomba Agua Honda Civic D13 D15 Zc 87-09</p>
+                <p class="price">$55.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p21', 'Bomba de agua NPW | 19200-PM3-003',55, 'https://http2.mlstatic.com/D_NQ_NP_2X_895634-MLV106407087991_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-PM3-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-PM3-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-P72-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_753250-MLV106409102045_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-P72-003</h3>
+                <p>Bomba Agua Honda Integra Civic B16 B18 93-05</p>
+                <p class="price">$55.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p22', 'Bomba de agua NPW | 19200-P72-003',55, 'https://http2.mlstatic.com/D_NQ_NP_2X_753250-MLV106409102045_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-P72-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-P72-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-PLM-A01.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_973306-MLV105804201552_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua | 19200-PLM-A01</h3>
+                <p>Bomba Agua Honda Civic D17 01-05</p>
+                <p class="price">$75.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p23', 'Bomba de agua | 19200-PLM-A01',75, 'https://http2.mlstatic.com/D_NQ_NP_2X_973306-MLV105804201552_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-PLM-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-PLM-A01.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-P2A-A01.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_802549-MLV106410079567_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-P2A-A01</h3>
+                <p>Bomba Agua Honda Civic D13 D15 D16 Zc 95-08</p>
+                <p class="price">$55.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p24', 'Bomba de agua NPW| 19200-P2A-A01',55, 'https://http2.mlstatic.com/D_NQ_NP_2X_802549-MLV106410079567_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-P2A-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-P2A-A01.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-P0A-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_736038-MLV106409348829_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-P0A-003</h3>
+                <p>Bomba Agua Accord Odyssey Prelude F18 F20 F22 93-09</p>
+                <p class="price">$50.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p25', 'Bomba de agua NPW | 19200-P0A-003',50, 'https:https://http2.mlstatic.com/D_NQ_NP_2X_736038-MLV106409348829_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-P0A-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-P0A-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-P75-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_758815-MLV105804196198_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-P75-003</h3>
+                <p>Bomba Agua Honda Cr-v B18 B20 97-01</p>
+                <p class="price">$60.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p26', 'Bomba de agua NPW | 19200-P75-003',60, 'https://http2.mlstatic.com/D_NQ_NP_2X_758815-MLV105804196198_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-P75-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-P75-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-P8A-A03.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_638446-MLV106414764559_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-P8A-A03</h3>
+                <p>Bomba Agua Honda Accord - Odyssey J25 30a 32a 35a 98-10</p>
+                <p class="price">$65.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p27', 'Bomba de agua NPW | 19200-P8A-A03',65, 'https://http2.mlstatic.com/D_NQ_NP_2X_638446-MLV106414764559_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-P8A-A03" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-P8A-A03.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-PWA-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_996578-MLV106416234263_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de Agua NPW| 19200-PWA-003</h3>
+                <p>Bomba Agua Honda Fit L13a 1.3 L15a 1.5 01-06</p>
+                <p class="price">$60.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p28', 'Bomba de Agua NPW| 19200-PWA-003',60, 'https://http2.mlstatic.com/D_NQ_NP_2X_996578-MLV106416234263_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de Agua NPW| 19200-PWA-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-PWA-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-RBC-013.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_792393-MLV106421065785_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-RBC-013</h3>
+                <p>Bomba Agua Honda Civic - Accord K20a 02-10</p>
+                <p class="price">$70.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p29', 'Bomba de agua | 19200-RBC-013',70, 'https://http2.mlstatic.com/D_NQ_NP_2X_792393-MLV106421065785_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-RBC-013" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-RBC-013.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-RDV-J01.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_893227-MLV106505740699_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-RDV-J01</h3>
+                <p>Bomba Agua Honda Accord - Odyssey J30a J35a 04-up</p>
+                <p class="price">$110.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p30', 'Bomba de agua | 19200-RDV-J01',110, 'https://http2.mlstatic.com/D_NQ_NP_2X_893227-MLV106505740699_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-RDV-J01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-RDV-J01.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-R40-A01.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_909016-MLV106505180171_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-R40-A01</h3>
+                <p>Bomba Agua Honda Accord - Cr-v - Odyssey K24 08-up</p>
+                <p class="price">$70.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p31', 'Bomba de agua NPW | 19200-R40-A01',70, 'https://http2.mlstatic.com/D_NQ_NP_2X_909016-MLV106505180171_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-R40-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-R40-A01.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-PTO-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_908560-MLV106414456615_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NPW | 19200-PTO-003</h3>
+                <p>Bomba Agua Honda Accord 2.2 2.3 F22 F23 Prelude 92-96 H28</p>
+                <p class="price">$50.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p32', 'Bomba de agua NPW | 19200-PTO-003',50, 'https://http2.mlstatic.com/D_NQ_NP_2X_908560-MLV106414456615_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NPW | 19200-PTO-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-PTO-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-PTO-013.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_972643-MLV107518318461_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua NGP | 19200-PTO-013</h3>
+                <p>Bomba Agua Honda Accord 90-02 Odyssey 95-98 Prelude 92-96</p>
+                <p class="price">$45.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p49', 'Bomba de agua NGP | 19200-PTO-013',45, 'https://http2.mlstatic.com/D_NQ_NP_2X_972643-MLV107518318461_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua NGP | 19200-PTO-013" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-PTO-013.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="19200-RNA-001 GMB.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_701886-MLV106421084221_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua GMB | 19200-RNA-A01</h3>
+                <p>Bomba Agua Honda Civic Emotion R18 05-11</p>
+                <p class="price">$85.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p33', 'Bomba de agua GMB | 19200-RNA-A01',85, 'https://http2.mlstatic.com/D_NQ_NP_2X_701886-MLV106421084221_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua GMB | 19200-RNA-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="19200-RNA-001 GMB.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="16110-19095.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_879387-MLV106541026674_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua GMB | 16110-19095</h3>
+                <p>Bomba Agua Con Polea Toyota Starlet 85-99 Paseo Tercel 94-97</p>
+                <p class="price">$55.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p49', 'Bomba de agua GMB | 16110-19095',55, 'https://http2.mlstatic.com/D_NQ_NP_2X_879387-MLV106541026674_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua GMB | 16110-19095" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="16110-19095.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="16110-19185.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_920669-MLV107177481557_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua GMB | 16110-19185</h3>
+                <p>Bomba Agua Toyota Corolla 1.8 Sapito Pantallita 99-02 7a-fe</p>
+                <p class="price">$80.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p50', 'Bomba de agua GMB | 16110-19185',80, 'https://http2.mlstatic.com/D_NQ_NP_2X_920669-MLV107177481557_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua GMB | 16110-19185" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="16110-19185.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="16100-79255.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_924807-MLV106534130810_022026-F.webp" alt="Bomba de agua"></a>
+            <div class="card-info">
+                <div>
+                <h3>Bomba de agua GMB | 16100-79255</h3>
+                <p>Bomba Agua Toyota Hilux Merú Tacoma Hiace 2.7 2tr 3rz</p>
+                <p class="price">$88.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p51', 'Bomba de agua GMB | 16100-79255',88, 'https://http2.mlstatic.com/D_NQ_NP_2X_924807-MLV106534130810_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Bomba de agua GMB | 16100-79255" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="16100-79255.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+
+
+        <div class="card">
+            <a href="A620YU26MM 197T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_783614-MLV105814680758_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A620YU26MM 197T</h3>
+                <p>Correa Tiempo Honda Accord Odyssey Pilot 3.0 (197dts) 26mm</p>
+                <p class="price">$65.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p34', 'Correa de Tiempo SUN | A620YU26MM 197T',65, 'https://http2.mlstatic.com/D_NQ_NP_2X_783614-MLV105814680758_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A620YU26MM 197T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A620YU26MM 197T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A472RU24MM 126T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_621746-MLV105814537000_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A472RU24MM 126T</h3>
+                <p>Correa Tiempo Honda Accord - Prelude 2.0 2.2 (126dts) 24mm</p>
+                <p class="price">$55.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p35', 'Correa de Tiempo SUN | A472RU24MM 126T',55, 'https://http2.mlstatic.com/D_NQ_NP_2X_621746-MLV105814537000_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A472RU24MM 126T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A472RU24MM 126T 1.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A488YU24MM 155T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_990901-MLV105814851226_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A488YU24MM 155T</h3>
+                <p>Correa Tiempo Honda Accord - Prelude 2.0 2.2 (155dts) 24mm</p>
+                <p class="price">$68.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p36', 'Correa de Tiempo SUN | A488YU24MM 155T',68, 'https://http2.mlstatic.com/D_NQ_NP_2X_990901-MLV105814851226_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A488YU24MM 155T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A488YU24MM 155T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A465RU26MM 124T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_739554-MLV105813698670_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo Sun | A465RU26MM 124T</h3>
+                <p>Correa Tiempo Honda Civic Doble Árbol Leva (124dts) 26mm|A465RU26MM 124T</p>
+                <p class="price">$60.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p37', 'Correa de Tiempo Sun | A465RU26MM 124T',60, 'https://http2.mlstatic.com/D_NQ_NP_2X_739554-MLV105813698670_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo Sun | A465RU26MM 124T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A465RU26MM 124T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A424RU21MMM 113T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_642713-MLV105814997484_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo Sun | A424RU21MM 113T</h3>
+                <p>Correa Tiempo Honda Vigor (113dts) 21mm</p>
+                <p class="price">$48.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p38', 'Correa de Tiempo Sun | A424RU21MM 113T',48, 'https://http2.mlstatic.com/D_NQ_NP_2X_642713-MLV105814997484_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo Sun | A424RU21MM 113T" class="btn-mercadolibre">Comprar ahora </a>
+                <a href="A424RU21MMM 113T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A390RU22MM 104T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_650983-MLV105709339744_012026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A390RU22MM 104T</h3>
+                <p>Correa Tiempo Honda Civic 7ma Gen D17 01-05 (104dts) 22mm</p>
+                <p class="price">$45.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p39', 'Correa de Tiempo SUN | A390RU22MM 104T',45, 'https://http2.mlstatic.com/D_NQ_NP_2X_650983-MLV105709339744_012026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A390RU22MM 104T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A390RU22MM 104T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A397RU24MM 106T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_719479-MLV105813701620_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A397RU24MM 106T</h3>
+                <p>Correa Tiempo Honda Civic 1.5 92-95 (106dts) 24mm</p>
+                <p class="price">$45.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p40', 'Correa de Tiempo SUN | A397RU24MM 106T',45, 'https://http2.mlstatic.com/D_NQ_NP_2X_719479-MLV105813701620_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A397RU24MM 106T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A397RU24MM 106T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A420RU24MM 112T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_952830-MLV106497694813_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A420RU24MM 112T</h3>
+                <p>Correa Tiempo Honda Accord 2.3 F23 99-02 (112dts) 24mm</p>
+                <p class="price">$48.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p41', 'Correa de Tiempo SUN | A420RU24MM 112T',48, 'https://http2.mlstatic.com/D_NQ_NP_2X_952830-MLV106497694813_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A420RU24MM 112T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A420RU24MM 112T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="A390RU24MM 104T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_920793-MLV105814559446_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | A390RU24MM 104T</h3>
+                <p>Correa Tiempo Honda Civic 6ta Gen. 1.6 96-00 (104dts) 24mm</p>
+                <p class="price">$45.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p42', 'Correa de Tiempo SUN | A390RU24MM 104T',45, 'https://http2.mlstatic.com/D_NQ_NP_2X_920793-MLV105814559446_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | A390RU24MM 104T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="A390RU24MM 104T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="H5620YU20 197T.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_618087-MLV105814676808_022026-F.webp" alt="correa de tiempo"></a>
+            <div class="card-info">
+                <div>
+                <h3>Correa de Tiempo SUN | H5620YU20 197T</h3>
+                <p>Correa Tiempo Honda Accord 3.0 3.5 03-up (197dts) 20mm</p>
+                <p class="price">$88.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p43', 'Correa de Tiempo SUN | H5620YU20 197T',88, 'https://http2.mlstatic.com/D_NQ_NP_2X_618087-MLV105814676808_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Correa de Tiempo SUN | H5620YU20 197T" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="H5620YU20 197T.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="B3406 _B3407.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_839317-MLV106756155456_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores TOKICO | B3406 RH / B3407 LH</h3>
+                <p>Amortiguadores Delanteros Toyota Corolla 14-19 Tokico (par)</p>
+                <p class="price">$220.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p44', 'Amortiguadores TOKICO | B3406 RH / B3407 LH',220, 'https://http2.mlstatic.com/D_NQ_NP_2X_839317-MLV106756155456_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores TOKICO | B3406 RH / B3407 LH" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="B3406 _B3407.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="B3232 _B3233.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_646509-MLV107512286795_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores TOKICO | B3232 RH / B3233 LH</h3>
+                <p>Amortiguadores Delanteros Corolla New Sensacion 02-08 (par)</p>
+                <p class="price">$270.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p45', 'Amortiguadores TOKICO | B3232 RH / B3233 LH',270, 'https://http2.mlstatic.com/D_NQ_NP_2X_646509-MLV107512286795_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores TOKICO | B3406 RH / B3407 LH" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="B3232 _B3233.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="U3805.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_854335-MLV107472380653_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores TOKICO | U3805</h3>
+                <p>Amortiguador Trasero Corolla New Sensation Explosion 03-14 (Ambos lados)</p>
+                <p class="price">$90.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p46', 'Amortiguadores TOKICO | U3805',90, 'https://http2.mlstatic.com/D_NQ_NP_2X_854335-MLV107472380653_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores TOKICO | U3805" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="U3805.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="B3271_B3272.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_736130-MLV107509005029_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores TOKICO | B3271 RH / B3272 LH </h3>
+                <p>Amortiguadores Delanteros Corolla Explosion 09-14 (par)</p>
+                <p class="price">$180.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p47', 'Amortiguadores TOKICO | B3271 RH / B3272 LH',180, 'https://http2.mlstatic.com/D_NQ_NP_2X_736130-MLV107509005029_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores | B3271 RH / B3272 LH" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="B3271_B3272.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="344342.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_736841-MLV81273847633_122024-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores OKAMI | 344342 </h3>
+                <p>Amortiguador Trasero Amb. Jeep Grand Cherokee Wj 99-05</p>
+                <p class="price">$35.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p52', 'Amortiguadores OKAMI | 344342',35, 'https://http2.mlstatic.com/D_NQ_NP_2X_736841-MLV81273847633_122024-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores OKAMI | 344342" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="344342.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="54611-3K050.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_711733-MLV107472343359_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores MANDO | 54611-3K050 </h3>
+                <p>Amortiguador Delantero Amb. Hyundai Sonata 2.4 3.3 Original</p>
+                <p class="price">$110.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p53', 'Amortiguadores MANDO | 54611-3K050',110, 'https://http2.mlstatic.com/D_NQ_NP_2X_711733-MLV107472343359_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores MANDO | 54611-3K050" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="54611-3K050.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="55311-3K030.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_615191-MLV107512443639_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores MANDO | 55311-3K030 </h3>
+                <p>Amortiguadores Traseros Amb. Hyundai Sonata 2.4 3.3</p>
+                <p class="price">$110.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p54', 'Amortiguadores MANDO | 55311-3K030',110, 'https://http2.mlstatic.com/D_NQ_NP_2X_615191-MLV107512443639_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores MANDO | 55311-3K030" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="55311-3K030.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="55311-3K030_CTR.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_870627-MLV107510448907_022026-F.webp" alt="Amortiguadores"></a>
+            <div class="card-info">
+                <div>
+                <h3>Amortiguadores CTR | 55311-3K030 </h3>
+                <p>Amortiguadores Traseros Amb. Hyundai Sonata 2.4 3.3</p>
+                <p class="price">$80.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p55', 'Amortiguadores CTR | 55311-3K030',80, 'https://http2.mlstatic.com/D_NQ_NP_2X_870627-MLV107510448907_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Amortiguadores CTR | 55311-3K030" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="55311-3K030_CTR.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="caja_aceite_08886-81875.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_836811-MLV106801125752_022026-F.webp" alt="Aceite"></a>
+            <div class="card-info">
+                <div>
+                <h3>Aceite de caja Toyota automatica | 08886-81875</h3>
+                <p>ACEITE CAJA AUTOMATICA TOYOTA COROLLA CVT ORIGINAL 4l</p>
+                <p class="price">$68.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p56', 'Aceite de caja Toyota | 08886-81875',68, 'https://http2.mlstatic.com/D_NQ_NP_2X_836811-MLV106801125752_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Aceite de caja Toyota | 08886-81875" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="caja_aceite_08886-81875.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="caja_aceite_08886-01805.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_615609-MLV107472899695_022026-F.webp" alt="Aceite"></a>
+            <div class="card-info">
+                <div>
+                <h3>Aceite de caja Toyota automatica | 08886-01805</h3>
+                <p>Aceite Transmisión Automática Toyota Lexus 2.5 Litros</p>
+                <p class="price">$100.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p57', 'Aceite de caja Toyota automatica | 08886-01805',100, 'https://http2.mlstatic.com/D_NQ_NP_2X_615609-MLV107472899695_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible los Aceite de caja Toyota automatica | 08886-01805" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="caja_aceite_08886-01805.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14510-PLC-034.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_798839-MLV106539333950_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo GMB | 14510-PLC-034</h3>
+                <p>Tensor Correa Tiempo Honda Civic 1.5 1.7 01-05 Gmb</p>
+                <p class="price">$68.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p58', 'Tensor de correa de tiempo GMB | 14510-PLC-034',68, 'https://http2.mlstatic.com/D_NQ_NP_2X_798839-MLV106539333950_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo GMB | 14510-PLC-034" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14510-PLC-034.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14510-P30-003.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_932205-MLV107251741359_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo KOYO | 14510-P30-003</h3>
+                <p>Tensor Correa Tiempo Honda Cr-v 2.0 B18 B20 96-01 Koyo</p>
+                <p class="price">$35.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p59', 'Tensor de correa de tiempo KOYO | 14510-P30-003',35, 'https://http2.mlstatic.com/D_NQ_NP_2X_798839-MLV106539333950_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo KOYO | 14510-P30-003" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14510-P30-003.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14550-P8A-A01.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_931486-MLV106545298484_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo QJB | 14550-P8A-A01</h3>
+                <p>Tensor Correa Tiempo Odyssey Pilot J30 J35 05-16</p>
+                <p class="price">$38.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p60', 'Tensor de correa de tiempo QJB | 14550-P8A-A01',38, 'https://http2.mlstatic.com/D_NQ_NP_2X_931486-MLV106545298484_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo QJB | 14550-P8A-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14550-P8A-A01.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14550-P8A-A00.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_716613-MLV106545183376_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo KOYO | 14550-P8A-A00</h3>
+                <p>Tensor Correa Tiempo Odyssey Pilot J30 J35 05-16</p>
+                <p class="price">$75.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p61', 'Tensor de correa de tiempo KOYO | 14550-P8A-A00',75, 'https://http2.mlstatic.com/D_NQ_NP_2X_716613-MLV106545183376_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo KOYO | 14550-P8A-A00" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14550-P8A-A00.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14520-P2A-305.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_972738-MLV107187999537_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo GMB | 14520-P2A-305</h3>
+                <p>Tensor Correa Tiempo Civic 1.6 D16 6ta Generación 96-00</p>
+                <p class="price">$30.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p62', 'Tensor de correa de tiempo GMB | 14520-P2A-305',30, 'https://http2.mlstatic.com/D_NQ_NP_2X_972738-MLV107187999537_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo GMB | 14520-P2A-305" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14520-P2A-305.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14510-P08-004.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_808898-MLV107187980113_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo NSK | 14510-P08-004</h3>
+                <p>Tensor Correa Tiempo Civic 90-95 Gmb Korea</p>
+                <p class="price">$38.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p63', 'Tensor de correa de tiempo NSK | 14510-P08-004',38, 'https://http2.mlstatic.com/D_NQ_NP_2X_808898-MLV107187980113_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo NSK | 14510-P08-004" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14510-P08-004.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14510-RCA-A01.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_981365-MLV106598881616_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo QJB | 14510-RCA-A01</h3>
+                <p>Tensor Correa Tiempo Accord 3.0 Odyssey Pilot 3.5 6cil Qjb</p>
+                <p class="price">$48.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p64', 'Tensor de correa de tiempo QJB | 14510-RCA-A01',48, 'https://http2.mlstatic.com/D_NQ_NP_2X_981365-MLV106598881616_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo QJB | 14510-RCA-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14510-RCA-A01.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="GT80440.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_727039-MLV106539368918_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo GMB | GT80440</h3>
+                <p>Tensor Correa Tiempo Honda Accord 2.0 2.2 92-02 Gmb Korea</p>
+                <p class="price">$30.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p65', 'Tensor de correa de tiempo GMB | GT80440',30, 'https://http2.mlstatic.com/D_NQ_NP_2X_727039-MLV106539368918_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo GMB | GT80440" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GT80440.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="31170-RNA-A02.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_854944-MLV107193663475_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo GMB | 31170-RNA-A02</h3>
+                <p>Tensor Correa Unica Honda Civic Emotion 1.8 06-08 Gmb Korea</p>
+                <p class="price">$128.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p66', 'Tensor de correa de tiempo GMB | 31170-RNA-A02',128, 'https://http2.mlstatic.com/D_NQ_NP_2X_854944-MLV107193663475_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo GMB | 31170-RNA-A02" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="31170-RNA-A02.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="14510-RCA-A01_koyo.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_851534-MLV106547486844_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Tensor de correa de tiempo KOYO | 14510-RCA-A01</h3>
+                <p>Tensor Correa Tiempo Accord 3.0 Odyssey Pilot 3.5 6cil</p>
+                <p class="price">$100.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p67', 'Tensor de correa de tiempo KOYO | 14510-RCA-A01',100, 'https://http2.mlstatic.com/D_NQ_NP_2X_851534-MLV106547486844_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Tensor de correa de tiempo KOYO | 14510-RCA-A01" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="14510-RCA-A01_koyo.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="T10160.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_676641-MLV107172799485_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Polea de correa de tiempo GMB | T10160</h3>
+                <p>Polea Correa Tiempo Tucson 2.0 Elantra 2.0 Tiburon 2.0</p>
+                <p class="price">$20.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p72', 'Polea de correa de tiempo GMB | T10160',20, 'https://http2.mlstatic.com/D_NQ_NP_2X_676641-MLV107172799485_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Polea de correa de tiempo GMB | T10160" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="T10160.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="GT10170.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_806036-MLV107177473459_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Polea de correa de tiempo GMB| GT10170</h3>
+                <p>Polea Correa Tiempo Hyundai Getz 1.6 Elantra 1.6 Cerato 1.6</p>
+                <p class="price">$20.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p73', 'Polea de correa de tiempo GMB| GT10170',20, 'https://http2.mlstatic.com/D_NQ_NP_2X_806036-MLV107177473459_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Polea de correa de tiempo GMB| GT10170" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GT10170.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="GT80390.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_709541-MLV106540366280_022026-F.webp" alt="Tensor"></a>
+            <div class="card-info">
+                <div>
+                <h3>Polea de correa de tiempo GMB| GT80390</h3>
+                <p>Polea Correa Tiempo Accord F20 2.2 94-98 2.3 99-01</p>
+                <p class="price">$35.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p73', 'Polea de correa de tiempo GMB| GT10170',35, 'https://http2.mlstatic.com/D_NQ_NP_2X_709541-MLV106540366280_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible la Polea de correa de tiempo GMB| GT10170" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="GT10170.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="26300-02752.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_807669-MLV107188052385_022026-F.webp" alt="Filtro"></a>
+            <div class="card-info">
+                <div>
+                <h3>Filtro de aceite MOBIS | 26300-02752</h3>
+                <p>Filtro de aceite para todos los carros hyundai / honda / kia / mitsubishi / toyota, / mazda / renault</p>
+                <p class="price">$6.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p68', 'Filtro de aceite MOBIS | 26300-02752',6, 'https://http2.mlstatic.com/D_NQ_NP_2X_807669-MLV107188052385_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Filtro de aceite MOBIS | 26300-02752" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="26300-02752.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <a href="17048 SAA 000.html">
+            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_995306-MLV106782646894_022026-F.webp" alt="Filtro"></a>
+            <div class="card-info">
+                <div>
+                <h3>Filtro de gasolina KING STEEL | 17048 SAA 000</h3>
+                <p>Filtro Gasolina Int. Honda Fit 1.3 1.4 1.5 02-08</p>
+                <p class="price">$38.00</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-add-cart" onclick="addToCart('p69', 'Filtro de gasolina KING STEEL | 17048 SAA 000',38, 'https://http2.mlstatic.com/D_NQ_NP_2X_995306-MLV106782646894_022026-F.webp')">
+                 <span>+</span> Agregar al Carrito
+                </button>
+                <a href="https://wa.me/584149900204?text=¡Hola, TDT AutoParts! me gustaria saber si tienen disponible el Filtro de gasolina KING STEEL | 17048 SAA 000" class="btn-mercadolibre">Comprar ahora</a>
+                <a href="17048 SAA 000.html"class="btn-detalles">Ver mas detalles</a>
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<footer>
+     <p>&copy; 2026 TDT Auto Parts C.A - Rif: J507936287</p>
+    <small>Distrito capital, Venezuela</small>
+</footer>
+
+<div class="cart-overlay" id="cart-overlay">
+    <div class="cart-modal">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p style="text-align: center; margin-top: 20px; color: #888;">Tu carrito está vacío</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <button class="btn-checkout" onclick="checkout()">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-8.68-2.031-.967-.272-.297-.471-.446-.966-.446-.495 0-1.287.186-1.956.917-.669.731-2.55 2.492-2.55 6.077 0 3.586 2.624 7.045 2.996 7.541.372.495 5.163 7.889 12.507 10.999 4.314 1.827 5.188 1.554 7.07 1.455 1.882-.099 3.021-1.238 3.442-2.428a3.546 3.546 0 0 0 .298-2.428c-.124-.198-.446-.347-.744-.496z"/></svg>
+                Comprar por WhatsApp
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.card');
+    const noResults = document.getElementById('noResults');
+
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = normalizeText(e.target.value);
+        let hasResults = false;
+
+        cards.forEach(card => {
+            // Obtenemos el título y la descripción
+            const title = normalizeText(card.querySelector('h3').textContent);
+            const desc = normalizeText(card.querySelector('p').textContent);
+
+            // Filtramos en tiempo real
+            if (title.includes(searchTerm) || desc.includes(searchTerm)) {
+                card.style.display = "flex"; // Lo mostramos
+                hasResults = true;
+            } else {
+                card.style.display = "none"; // Lo ocultamos
+            }
+        });
+
+        // Mostramos u ocultamos el mensaje de "No hay resultados"
+        if (hasResults || searchTerm === '') {
+            noResults.style.display = "none";
+        } else {
+            noResults.style.display = "block";
+        }
+    });
+});
+
+function normalizeText(text) {
+    return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, ""); // Elimina acentos
+}
+
+    // --- LÓGICA DEL CARRITO EN JAVASCRIPT ---
+
+    // 1. Inicializar el carrito desde LocalStorage
+    let cart = JSON.parse(localStorage.getItem('cartTDT')) || [];
+
+    // Al cargar la página, actualizar la interfaz
+    document.addEventListener('DOMContentLoaded', updateCartUI);
+
+    // 2. Función para abrir/cerrar el carrito
+    function toggleCart() {
+        const modal = document.getElementById('cart-overlay');
+        if (modal.style.display === 'flex') {
+            modal.style.display = 'none';
+        } else {
+            modal.style.display = 'flex';
+        }
+    }
+
+    // Cerrar si se hace clic fuera del modal
+    document.getElementById('cart-overlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+
+    // 3. Función para agregar productos
+    function addToCart(id, name, price, img) {
+        // Buscar si el producto ya existe en el carrito
+        const existingItem = cart.find(item => item.id === id);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: id,
+                name: name,
+                price: price,
+                img: img,
+                quantity: 1
+            });
+        }
+
+        // Guardar y actualizar
+        saveCart();
+        updateCartUI();
+        
+        // Abrir el carrito automáticamente para mostrar confirmación
+        const modal = document.getElementById('cart-overlay');
+        modal.style.display = 'flex';
+    }
+
+    // 4. Función para eliminar productos
+    function removeFromCart(id) {
+        cart = cart.filter(item => item.id !== id);
+        saveCart();
+        updateCartUI();
+    }
+
+    // 5. Guardar en LocalStorage
+    function saveCart() {
+        localStorage.setItem('cartTDT', JSON.stringify(cart));
+    }
+
+    // 6. Actualizar la Interfaz (HTML) del carrito
+    function updateCartUI() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCountSpan = document.getElementById('cart-count');
+        const cartTotalPriceSpan = document.getElementById('cart-total-price');
+
+        // Limpiar contenedor
+        cartItemsContainer.innerHTML = '';
+
+        let total = 0;
+        let totalCount = 0;
+
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p style="text-align: center; margin-top: 20px; color: #888;">Tu carrito está vacío</p>';
+        } else {
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                totalCount += item.quantity;
+
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('cart-item');
+                itemElement.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div>Cant: ${item.quantity}</div>
+                        <div class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                    </div>
+                    <button class="btn-remove" onclick="removeFromCart('${item.id}')">&times;</button>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+            });
+        }
+
+        // Actualizar textos
+        cartCountSpan.textContent = totalCount;
+        cartTotalPriceSpan.textContent = '$' + total.toFixed(2);
+    }
+
+    // 7. Función Checkout (WhatsApp)
+    function checkout() {
+        if (cart.length === 0) {
+            alert("El carrito está vacío");
+            return;
+        }
+
+        // NUMERO DE TELEFONO DE LA TIENDA (CAMBIAR AQUI)
+        const phoneNumber = "584149900204"; // Formato: 58 + código sin 0 + número
+
+        let message = "¡Hola TDT Auto Parts! deseo comprar lo siguiente:%0A%0A";
+        let total = 0;
+
+        cart.forEach(item => {
+            const subtotal = item.price * item.quantity;
+            message += `▪️ ${item.quantity} x ${item.name} - $${subtotal}%0A`;
+            total += subtotal;
+        });
+
+        message += `%0A*TOTAL A PAGAR: $${total.toFixed(2)}*`;
+        message += "%0A%0AMe indica los datos de pago y envío por favor.";
+
+        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    }
+
+// --- LÓGICA DE FILTRADO DE CATEGORÍAS ---
+    function filterProduct(brand) {
+        // 1. Cambiar el color del botón activo
+        const buttons = document.querySelectorAll('.category-btn');
+        buttons.forEach(btn => {
+            if (btn.textContent.trim().toUpperCase() === brand.toUpperCase()) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // 2. Definir las palabras clave de cada marca (modelos que tienes en el catálogo)
+        const hondaKeywords = ['honda', 'odyssey', 'civic', 'accord', 'integra', 'fit', 'pilot', 'cr-v', 'prelude', 'vigor'];
+        const toyotaKeywords = ['toyota', 'meru', 'prado', '4runner', 'fortuner', 'kavak', 'corolla', 'camry', 'tacoma', 'hilux', 'yaris', 'previa', 'terios', 'bego', 'daihatsu'];
+        const hyundaiKeywords = ['hyundai', 'sonata',];
+        const cards = document.querySelectorAll('.card');
+        const noResults = document.getElementById('noResults');
+        let hasResults = false;
+
+        // 3. Filtrar las tarjetas
+        cards.forEach(card => {
+            // Obtenemos todo el texto de la tarjeta en minúsculas
+            const cardText = normalizeText(card.textContent);
+            let shouldShow = false;
+
+            if (brand === 'todos') {
+                shouldShow = true;
+            } else if (brand === 'Honda') {
+                shouldShow = hondaKeywords.some(keyword => cardText.includes(keyword));
+            } else if (brand === 'Toyota') {
+                shouldShow = toyotaKeywords.some(keyword => cardText.includes(keyword));
+            } else if (brand === 'hyundai') {
+                shouldShow = hyundaiKeywords.some(keyword => cardText.includes(keyword));
+            }
+
+            // Mostramos u ocultamos
+            if (shouldShow) {
+                card.style.display = "flex";
+                hasResults = true;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        // Mostrar mensaje si no hay resultados en esa categoría
+        if (hasResults) {
+            noResults.style.display = "none";
+        } else {
+            noResults.style.display = "block";
+            noResults.textContent = "No se encontraron repuestos para la categoría seleccionada.";
+        }
+    }
+
+</script>
+
+</body>
+</html>
