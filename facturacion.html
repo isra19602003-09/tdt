@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturación - AutoParts TDT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #333;
+            --light-bg: #f1f5f9;
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: rgb(0, 0, 0);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+        }
+
+        h2 { color: var(--secondary-color); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+
+        /* Tabla de productos */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: var(--light-bg); color: var(--secondary-color); }
+        .total-row { font-weight: 800; font-size: 1.2rem; color: var(--primary-color); }
+        .total-bs { font-weight: 800; font-size: 1.2rem; color: #25D366; } /* Verde para Bolívares */
+
+        /* Formulario */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--primary-color); }
+
+        .bcv-box {
+            background: #eef2f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #25D366;
+            margin-bottom: 20px;
+        }
+
+        .btn-submit {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { background: #d90429; }
+        
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Factura Generada (Oculta por defecto) */
+        #factura-generada { display: none; }
+        .factura-header { text-align: center; margin-bottom: 30px; }
+        .factura-header img { width: 100px; margin-bottom: 10px; }
+        .datos-cliente { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 20px; background: #fafafa;}
+        .datos-cliente p { margin: 5px 0; }
+
+        .btn-print {
+            background: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Estilos para impresión */
+        @media print {
+            body { background: white; }
+            header, #checkout-form, .btn-print, .btn-back { display: none !important; }
+            .container { box-shadow: none; margin: 0; padding: 0; }
+            #factura-generada { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TDT AutoParts - Facturación</h1>
+</header>
+
+<div class="container" id="main-container">
+    <a href="catalogo 2.html" class="btn-back">← Volver al Catálogo</a>
+    
+    <div id="checkout-form">
+        <h2>Resumen de tu Orden</h2>
+        <div style="overflow-x: auto;">
+            <table id="order-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Precio Unit.</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="order-body">
+                    </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>TOTAL ($):</strong></td>
+                        <td class="total-row" id="order-total">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>TOTAL (Bs):</strong></td>
+                        <td class="total-bs" id="order-total-bs">Bs 0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <h2>Datos de Facturación</h2>
+        <form id="billingForm">
+            
+            <div class="form-group bcv-box">
+                <label for="tasa-bcv">Tasa de Cambio Oficial (BCV)</label>
+                <input type="number" id="tasa-bcv" step="0.0001" min="0.1" required>
+                <small id="bcv-status" style="display: block; margin-top: 5px; font-weight: 600; color: #666;">⏳ Consultando BCV en tiempo real...</small>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Nombres</label>
+                <input type="text" id="nombre" required placeholder="Ej: Juan">
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellidos</label>
+                <input type="text" id="apellido" required placeholder="Ej: Pérez">
+            </div>
+            <div class="form-group">
+                <label for="telefono">Número de Teléfono</label>
+                <input type="tel" id="telefono" required placeholder="Ej: 0414-1234567">
+            </div>
+            <div class="form-group">
+                <label for="metodo">Método de Pago</label>
+                <select id="metodo" required>
+                    <option value="" disabled selected>Seleccione un método...</option>
+                    <option value="Pago Móvil">Pago Móvil</option>
+                    <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                    <option value="Zelle">Zelle</option>
+                    <option value="Efectivo (Divisas)">Efectivo (Divisas)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">Procesar y Generar Factura</button>
+        </form>
+    </div>
+
+    <div id="factura-generada">
+        <div class="factura-header">
+            <img src="logo.png" alt="TDT AutoParts Logo" onerror="this.style.display='none'">
+            <h2>FACTURA COMERCIAL</h2>
+            <p><strong>TDT Auto Parts C.A</strong><br>Rif: J507936287<br>Distrito Capital, Venezuela</p>
+            <p>Fecha: <span id="factura-fecha"></span> | Nro: <span id="factura-nro"></span></p>
+        </div>
+
+        <div class="datos-cliente">
+            <h3>Datos del Cliente</h3>
+            <p><strong>Nombre:</strong> <span id="lbl-nombre"></span> <span id="lbl-apellido"></span></p>
+            <p><strong>Teléfono:</strong> <span id="lbl-telefono"></span></p>
+            <p><strong>Método de Pago:</strong> <span id="lbl-metodo"></span></p>
+            <p><strong>Tasa de Cálculo:</strong> Bs <span id="lbl-tasa"></span></p>
+        </div>
+
+        <table id="factura-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Cant.</th>
+                    <th>P.U ($)</th>
+                    <th>Total ($)</th>
+                </tr>
+            </thead>
+            <tbody id="factura-body">
+                </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>TOTAL ($):</strong></td>
+                    <td class="total-row" id="factura-total">$0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>TOTAL A PAGAR (Bs):</strong></td>
+                    <td class="total-bs" id="factura-total-bs">Bs 0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar como PDF</button>
+    </div>
+
+</div>
+
+<script>
+    let totalUSD = 0; // Variable global para guardar el total en dólares
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Cargar el carrito
+        const cart = JSON.parse(localStorage.getItem('cartTDT')) || [];
+        const orderBody = document.getElementById('order-body');
+        const orderTotal = document.getElementById('order-total');
+        
+        if (cart.length === 0) {
+            orderBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">No hay productos en el carrito. Vuelve al catálogo para agregar repuestos.</td></tr>';
+            document.querySelector('.btn-submit').disabled = true;
+            return;
+        }
+
+        // Mostrar productos en la tabla del formulario
+        cart.forEach(item => {
+            const subtotal = item.price * item.quantity;
+            totalUSD += subtotal;
+            orderBody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${subtotal.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        orderTotal.textContent = '$' + totalUSD.toFixed(2);
+
+        // 2. Obtener la tasa del BCV automáticamente
+        obtenerTasaBCV();
+    });
+
+    function obtenerTasaBCV() {
+        const bcvInput = document.getElementById('tasa-bcv');
+        const bcvStatus = document.getElementById('bcv-status');
+
+        // Consumiendo DolarAPI (Servicio gratuito y estable para VE)
+        fetch('https://ve.dolarapi.com/v1/dolares/oficial')
+            .then(response => response.json())
+            .then(data => {
+                const tasa = data.promedio;
+                bcvInput.value = tasa;
+                bcvStatus.innerHTML = `✅ Tasa BCV obtenida exitosamente.`;
+                bcvStatus.style.color = "#25D366";
+                calcularTotalBs(); // Calcular el total con la nueva tasa
+            })
+            .catch(error => {
+                console.error("Error obteniendo la tasa:", error);
+                bcvStatus.innerHTML = `⚠️ No se pudo obtener la tasa automática. Por favor, escríbela manualmente.`;
+                bcvStatus.style.color = "red";
+            });
+    }
+
+    // Escuchar si el usuario cambia la tasa manualmente para recalcular
+    document.getElementById('tasa-bcv').addEventListener('input', calcularTotalBs);
+
+    function calcularTotalBs() {
+        const tasa = parseFloat(document.getElementById('tasa-bcv').value) || 0;
+        const totalBs = totalUSD * tasa;
+        
+        // Actualizar UI del formulario
+        document.getElementById('order-total-bs').textContent = 'Bs ' + totalBs.toFixed(2);
+        
+        // Actualizar UI de la factura generada
+        document.getElementById('factura-total-bs').textContent = 'Bs ' + totalBs.toFixed(2);
+        document.getElementById('lbl-tasa').textContent = tasa.toFixed(2);
+    }
+
+    // Manejar el envío del formulario
+    document.getElementById('billingForm').addEventListener('submit', function(e) {
+        e.preventDefault(); 
+
+        const cart = JSON.parse(localStorage.getItem('cartTDT')) || [];
+        
+        // Obtener datos del cliente
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const telefono = document.getElementById('telefono').value;
+        const metodo = document.getElementById('metodo').value;
+
+        // Llenar datos en la factura
+        document.getElementById('lbl-nombre').textContent = nombre;
+        document.getElementById('lbl-apellido').textContent = apellido;
+        document.getElementById('lbl-telefono').textContent = telefono;
+        document.getElementById('lbl-metodo').textContent = metodo;
+
+        // Generar fecha y número de factura aleatorio
+        const hoy = new Date();
+        document.getElementById('factura-fecha').textContent = hoy.toLocaleDateString();
+        document.getElementById('factura-nro').textContent = Math.floor(Math.random() * 90000) + 10000;
+
+        // Llenar tabla de la factura
+        const facturaBody = document.getElementById('factura-body');
+        facturaBody.innerHTML = ''; // Limpiar por si acaso
+        
+        cart.forEach(item => {
+            const subtotal = item.price * item.quantity;
+            facturaBody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${subtotal.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+        
+        document.getElementById('factura-total').textContent = '$' + totalUSD.toFixed(2);
+
+        // Ocultar formulario, mostrar factura
+        document.getElementById('checkout-form').style.display = 'none';
+        document.getElementById('factura-generada').style.display = 'block';
+    });
+</script>
+
+</body>
+</html>
